@@ -79,3 +79,99 @@ Contains cleansed, standardized, and deduplicated data. This layer applies busin
 
 ### Gold Layer
 Provides business-ready dimensional views (`dim_customers`, `dim_products`, and `fact_sales`) organized in a star schema. These views are optimized for analytics and can be directly consumed by BI tools such as Power BI, Tableau, and SSRS.
+
+---
+
+## 🚀 Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/diixon/sql-dw-project.git
+cd sql-dw-project
+```
+
+### 2. Execute the Setup Scripts
+
+Open the SQL files in SQL Server Management Studio (SSMS) or Azure Data Studio and execute them against your SQL Server instance in the following order.
+
+| Step | Script | Purpose |
+|------|--------|---------|
+| 1 | `scripts/Init database.sql` | Creates the `data_warehouse` database and the `bronze`, `silver`, and `gold` schemas. |
+| 2 | `scripts/bronze/create_bronze_tables.sql` | Creates the raw staging tables in the Bronze layer. |
+| 3 | `scripts/bronze/load_data_into_bronze.sql` | Creates the `bronze.load_bronze` stored procedure. |
+| 4 | `scripts/silver/create_silver_tables.sql` | Creates the cleansed tables in the Silver layer. |
+| 5 | `scripts/create_proper_function.sql` | Creates the `dbo.fn_ProperCase` helper function. |
+| 6 | `scripts/silver/load_data_into_silver.sql` | Creates the `silver.load_silver` stored procedure. |
+| 7 | `scripts/gold/create_gold_views.sql` | Creates the `gold.dim_customers`, `gold.dim_products`, and `gold.fact_sales` views. |
+| 8 | `tests/check_quality_silver.sql` | Creates the `silver.check_silver_quality` stored procedure. |
+| 9 | `tests/check_quality_gold.sql` | Creates the `gold.check_gold_quality` stored procedure. |
+
+> **⚠️ Important**
+>
+> Complete **Steps 1–7** before loading any data. The quality-check procedures (Steps 8–9) can be created at any time.
+
+---
+
+### 3. Update the CSV File Paths
+
+Open `scripts/bronze/load_data_into_bronze.sql` and locate the `BULK INSERT` statements.
+
+Replace the placeholder paths with the actual location of your CSV files. Ensure the SQL Server service account has permission to access those files.
+
+Example:
+
+```sql
+BULK INSERT bronze.crm_cust_info
+FROM 'C:\data\source_crm\cust_info.csv'
+WITH (
+    FIRSTROW = 2,
+    FIELDTERMINATOR = ',',
+    TABLOCK
+);
+```
+
+---
+
+### 4. Load Data into the Bronze Layer
+
+```sql
+USE data_warehouse;
+GO
+
+EXEC bronze.load_bronze;
+```
+
+This procedure truncates the Bronze tables and loads the source CSV files using `BULK INSERT`. Execution progress is displayed in the **Messages** tab.
+
+---
+
+### 5. Load Data into the Silver Layer
+
+```sql
+EXEC silver.load_silver;
+```
+
+This procedure performs all cleansing, standardization, validation, and transformation logic before populating the Silver tables.
+
+---
+
+### 6. Run Data Quality Checks (Optional)
+
+```sql
+EXEC silver.check_silver_quality;
+EXEC gold.check_gold_quality;
+```
+
+Review the output and investigate any **FAIL** or **WARN** messages.
+
+---
+
+### 7. Query the Gold Layer
+
+```sql
+SELECT * FROM gold.dim_customers;
+SELECT * FROM gold.fact_sales;
+```
+
+These views are ready to be connected to BI tools such as Power BI, Tableau, or SSRS.
