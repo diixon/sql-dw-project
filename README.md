@@ -175,3 +175,84 @@ SELECT * FROM gold.fact_sales;
 ```
 
 These views are ready to be connected to BI tools such as Power BI, Tableau, or SSRS.
+
+---
+
+## 🧪 Usage
+
+After completing the installation, the typical workflow is shown below.
+
+### Full Refresh (Truncate & Reload)
+
+```sql
+USE data_warehouse;
+GO
+
+-- 1. Load raw source data into the Bronze layer
+EXEC bronze.load_bronze;
+
+-- 2. Cleanse and transform data into the Silver layer
+EXEC silver.load_silver;
+
+-- 3. Validate data quality
+EXEC silver.check_silver_quality;
+EXEC gold.check_gold_quality;
+```
+
+### Incremental Loads
+
+The current implementation performs a **full truncate-and-reload** for each execution.
+
+For production environments, you can extend the `load_*` procedures to support incremental loading using techniques such as:
+
+- `MERGE` statements
+- Change detection (CDC or timestamps)
+- Append-only loading
+- Slowly Changing Dimensions (SCD)
+
+### Querying the Gold Layer
+
+After loading the Silver layer, the Gold views are immediately available for reporting and analytics.
+
+```sql
+-- Top 10 customers by total sales
+SELECT TOP 10
+    c.first_name + ' ' + c.last_name AS customer_name,
+    SUM(f.sales_amount) AS total_spent
+FROM gold.fact_sales AS f
+JOIN gold.dim_customers AS c
+    ON f.customer_key = c.customer_key
+GROUP BY c.first_name, c.last_name
+ORDER BY total_spent DESC;
+
+-- Monthly sales trend
+SELECT
+    YEAR(order_date) AS year,
+    MONTH(order_date) AS month,
+    SUM(sales_amount) AS monthly_sales
+FROM gold.fact_sales
+GROUP BY YEAR(order_date), MONTH(order_date)
+ORDER BY year, month;
+
+-- Product category performance
+SELECT
+    p.category,
+    p.subcategory,
+    COUNT(*) AS transaction_count,
+    SUM(f.sales_amount) AS total_sales
+FROM gold.fact_sales AS f
+JOIN gold.dim_products AS p
+    ON f.product_key = p.product_key
+GROUP BY p.category, p.subcategory
+ORDER BY total_sales DESC;
+```
+
+### Understanding the Data Quality Checks
+
+Both `silver.check_silver_quality` and `gold.check_gold_quality` produce detailed validation results.
+
+- ✅ **PASS** – No issues were found.
+- ❌ **FAIL** – A critical issue was detected (such as duplicate keys or broken relationships) and should be resolved.
+- ⚠️ **WARN** – A non-critical issue was detected that should be reviewed.
+
+At the end of each execution, a summary of all detected issues is displayed. If no failures are reported, the data is ready for analysis and reporting.
