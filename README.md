@@ -57,3 +57,25 @@ sql-dw-project/
 - **Analytics-Ready Gold Layer** – Provides two dimension views (`dim_customers`, `dim_products`) and one fact view (`fact_sales`) using a star schema for BI and reporting.
 - **Built-in Data Quality Validation** – SQL quality checks verify duplicates, referential integrity, data consistency, and business rules with clear PASS/FAIL/WARN results.
 - **Production-Oriented Design** – Includes configurable file paths, detailed execution logs, error handling, and guidance for safe execution.
+
+---
+
+## 🏛️ Architecture
+
+This project follows the **Medallion Architecture**, a three-layer data architecture that progressively improves data quality from raw ingestion to business-ready analytics.
+
+```text
+┌────────────┐     ┌────────────┐     ┌──────────────┐
+│   BRONZE   │ ──> │   SILVER   │ ──> │     GOLD     │
+│  Raw Data  │     │ Clean Data │     │ Business Data│
+└────────────┘     └────────────┘     └──────────────┘
+```
+
+### Bronze Layer
+Stores raw data exactly as it is received from the CRM and ERP CSV files. No transformations are applied, preserving the original source data for traceability and reprocessing.
+
+### Silver Layer
+Contains cleansed, standardized, and deduplicated data. This layer applies business rules such as data type conversions, date validation, code mapping, ERP ID standardization, and other data quality improvements.
+
+### Gold Layer
+Provides business-ready dimensional views (`dim_customers`, `dim_products`, and `fact_sales`) organized in a star schema. These views are optimized for analytics and can be directly consumed by BI tools such as Power BI, Tableau, and SSRS.
