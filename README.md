@@ -14,6 +14,22 @@ This repository serves as a practical portfolio project for data engineering and
 
 ---
 
+## 📚 Table of Contents
+
+- [🧭 Project Overview](#-project-overview)
+- [📁 Project Structure](#-project-structure)
+- [✨ Features](#-features)
+- [🏛️ Architecture](#️-architecture)
+- [🚀 Installation & Setup](#-installation--setup)
+- [🧪 Usage](#-usage)
+- [📜 Scripts & Components](#-scripts--components)
+- [🔍 Data Quality Checks](#-data-quality-checks)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👤 Author](#-author)
+
+---
+
 ## 📁 Project Structure
 
 ```text
@@ -342,3 +358,83 @@ EXEC gold.check_gold_quality;
 ```
 
 Review the output for any **FAIL** or **WARN** messages. Each procedure prints a summary of the validation results, and the scripts include commented diagnostic queries that can help identify problematic records when issues are detected.
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+Whether it's a bug fix, a new transformation rule, or a documentation improvement, your help is appreciated.
+
+### How to Contribute
+
+1. **Fork** the repository.
+
+2. **Create** a feature branch:
+
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+3. **Commit** your changes with clear, descriptive messages:
+
+   ```bash
+   git commit -m "Add: description of the change"
+   ```
+
+4. **Push** your branch:
+
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+5. **Open** a Pull Request against the `main` branch and describe what you changed and why.
+
+---
+
+### Before You Submit
+
+- Ensure your SQL scripts are idempotent (they can be safely re-run) and follow the existing code style.
+
+- Add or update data quality checks if you introduce new transformation logic.
+
+- Test your changes on a clean database to confirm everything works from scratch.
+
+---
+
+### Reporting Issues
+
+If you find a bug or have a suggestion, please use the **Issues** page and include:
+
+- A clear description of the problem or idea.
+
+- Steps to reproduce the issue (if applicable).
+
+- The SQL Server version you are using.
+
+---
+
+Thank you for contributing! All submissions are reviewed, and constructive collaboration is always welcome.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**, which allows you to use, modify, and distribute the code freely.
+
+For more details, see the [LICENSE](LICENSE) file.
+
+---
+
+## 👤 Author
+
+**Mohamed Ahmed**
+
+- GitHub: [@diixon](https://github.com/diixon)
+- LinkedIn: [linkedin.com/in/mohamed-ahmed-421b9541b](https://www.linkedin.com/in/mohamed-ahmed-421b9541b)
+- Email: mmoohamedahmed1@gmail.com
+
+---
+
+*Built with ❤️ to simplify data warehouse development and setup.*
