@@ -299,3 +299,46 @@ At the end of each execution, a summary of all detected issues is displayed. If 
 |--------|-------------|
 | `tests/check_quality_silver.sql` | Creates the `silver.check_silver_quality` stored procedure to validate duplicates, invalid codes, whitespace issues, date logic, and sales calculations in the Silver layer. |
 | `tests/check_quality_gold.sql` | Creates the `gold.check_gold_quality` stored procedure to validate surrogate keys, referential integrity, business rules, and data consistency in the Gold layer. |
+
+---
+
+## 🔍 Data Quality Checks
+
+Two stored procedures provide automated data validation at key stages of the pipeline. Both procedures print clear **PASS**, **FAIL**, and **WARN** messages, followed by a summary of the validation results.
+
+### Silver Layer (`silver.check_silver_quality`)
+
+Run this procedure after `silver.load_silver` to verify that the transformation and cleansing logic completed successfully.
+
+| Check | Validation |
+|-------|------------|
+| Duplicate business keys | Ensures `cst_id` and `prd_id` are unique. |
+| Trimmed text fields | Detects leading or trailing whitespace in text columns. |
+| Code validity | Verifies marital status, gender, and product line values are mapped to valid descriptions. |
+| Product cost validation | Ensures `prd_cost` is not `NULL` or negative. |
+| Date validation | Confirms `prd_start_dt ≤ prd_end_dt` and `order_date ≤ shipping_date ≤ due_date`. |
+| Sales validation | Verifies `sls_sales = sls_quantity × sls_price` and checks for invalid or negative values. |
+| Country standardization | Identifies country codes or values that may require additional mapping. |
+| Birth date validation | Detects birth dates that occur in the future. |
+
+### Gold Layer (`gold.check_gold_quality`)
+
+Run this procedure after creating the Gold views to verify that the dimensional model is consistent and reliable.
+
+| Check | Validation |
+|-------|------------|
+| Surrogate key uniqueness | Ensures `customer_key` and `product_key` are unique. |
+| Business key uniqueness | Ensures `customer_id` and `product_id` are not duplicated. |
+| Referential integrity | Confirms every record in `fact_sales` references valid dimension records. |
+| Gender and country validation | Verifies only expected gender values are present and country values are populated. |
+| Date validation | Confirms `order_date ≤ shipping_date ≤ due_date`. |
+| Sales validation | Verifies `sales_amount = quantity × price` and checks for invalid values. |
+
+### Running the Quality Checks
+
+```sql
+EXEC silver.check_silver_quality;
+EXEC gold.check_gold_quality;
+```
+
+Review the output for any **FAIL** or **WARN** messages. Each procedure prints a summary of the validation results, and the scripts include commented diagnostic queries that can help identify problematic records when issues are detected.
