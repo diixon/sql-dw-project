@@ -44,3 +44,16 @@ sql-dw-project/
     ├── check_quality_silver.sql           # Data quality checks for the Silver layer
     └── check_quality_gold.sql             # Data quality checks for the Gold layer
 ```
+
+---
+
+## ✨ Features
+
+- **Complete Medallion Pipeline** – Implements the Bronze → Silver → Gold architecture, from raw CSV ingestion to analytical views.
+- **Idempotent & Re-runnable** – Scripts can be safely re-executed by dropping/recreating objects or truncating tables before loading.
+- **CRM & ERP Integration** – Combines six source datasets from CRM and ERP systems into a unified data warehouse.
+- **Robust Bronze Loading** – Uses `BULK INSERT` with progress logging, execution timing, and `TRY...CATCH` error handling.
+- **Comprehensive Silver Transformations** – Includes data cleansing, deduplication, code mapping, data type conversions, date validation, business rule enforcement, ERP ID standardization, and proper-case formatting.
+- **Analytics-Ready Gold Layer** – Provides two dimension views (`dim_customers`, `dim_products`) and one fact view (`fact_sales`) using a star schema for BI and reporting.
+- **Built-in Data Quality Validation** – SQL quality checks verify duplicates, referential integrity, data consistency, and business rules with clear PASS/FAIL/WARN results.
+- **Production-Oriented Design** – Includes configurable file paths, detailed execution logs, error handling, and guidance for safe execution.
