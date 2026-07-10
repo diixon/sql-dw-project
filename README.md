@@ -256,3 +256,46 @@ Both `silver.check_silver_quality` and `gold.check_gold_quality` produce detaile
 - ⚠️ **WARN** – A non-critical issue was detected that should be reviewed.
 
 At the end of each execution, a summary of all detected issues is displayed. If no failures are reported, the data is ready for analysis and reporting.
+
+---
+
+## 📜 Scripts & Components
+
+### Database Initialization
+
+| Script | Description |
+|--------|-------------|
+| `scripts/Init database.sql` | Drops and recreates the `data_warehouse` database, then creates the `bronze`, `silver`, and `gold` schemas. |
+
+### Utility
+
+| Script | Description |
+|--------|-------------|
+| `scripts/create_proper_function.sql` | Creates the `dbo.fn_ProperCase` scalar function, which converts text to proper case (for example, `'o''brien-smith'` → `'O''Brien-Smith'`). Used to standardize country names. |
+
+### Bronze Layer (Raw Data)
+
+| Script | Description |
+|--------|-------------|
+| `scripts/bronze/create_bronze_tables.sql` | Creates the six raw staging tables in the `bronze` schema that mirror the source CSV files. |
+| `scripts/bronze/load_data_into_bronze.sql` | Creates the `bronze.load_bronze` stored procedure, which truncates the Bronze tables and loads data using `BULK INSERT` with execution logging and error handling. |
+
+### Silver Layer (Clean & Standardized Data)
+
+| Script | Description |
+|--------|-------------|
+| `scripts/silver/create_silver_tables.sql` | Creates the six Silver tables with appropriate data types and the `dwh_create_date` audit column. |
+| `scripts/silver/load_data_into_silver.sql` | Creates the `silver.load_silver` stored procedure, which cleans, standardizes, validates, and loads data from the Bronze layer into the Silver layer. |
+
+### Gold Layer (Business Views)
+
+| Script | Description |
+|--------|-------------|
+| `scripts/gold/create_gold_views.sql` | Creates the `dim_customers`, `dim_products`, and `fact_sales` views, implementing a star schema optimized for analytics and reporting. |
+
+### Data Quality Validation
+
+| Script | Description |
+|--------|-------------|
+| `tests/check_quality_silver.sql` | Creates the `silver.check_silver_quality` stored procedure to validate duplicates, invalid codes, whitespace issues, date logic, and sales calculations in the Silver layer. |
+| `tests/check_quality_gold.sql` | Creates the `gold.check_gold_quality` stored procedure to validate surrogate keys, referential integrity, business rules, and data consistency in the Gold layer. |
