@@ -1,5 +1,46 @@
 ## 🧭 Project Overview
 
-**SQL Data Warehouse Project** is an end‑to‑end, SQL Server‑based data warehouse starter kit built on the **Medallion Architecture** (bronze → silver → gold). It combines raw data ingestion from CRM and ERP CSV files, comprehensive data cleansing and transformation, and a dimensional model ready for reporting – all wrapped with automated data quality checks.
+**SQL Data Warehouse Project** is an end-to-end SQL Server project that demonstrates how to build a modern data warehouse using the **Medallion Architecture (Bronze → Silver → Gold)**.
 
-This project is ideal for data engineers and analysts who want a repeatable, version‑controlled foundation for a modern on‑premises data warehouse. Instead of building everything from scratch, you can clone the repo, point it to your source files, and have a fully validated analytical pipeline in minutes.
+The project covers the complete data warehousing workflow, including:
+
+- Ingesting raw CRM and ERP data from CSV files
+- Loading data into the Bronze layer
+- Cleaning, standardizing, and transforming data in the Silver layer
+- Building analytical views in the Gold layer using a dimensional model
+- Validating data quality with automated SQL checks
+
+This repository serves as a practical portfolio project for data engineering and data analytics, showcasing ETL development, data modeling, SQL best practices, and data quality validation.
+
+---
+
+## 📁 Project Structure
+
+```text
+sql-dw-project/
+├── README.md
+├── datasets/                              # Raw CSV source files
+│   ├── source_crm/
+│   │   ├── cust_info.csv
+│   │   ├── prd_info.csv
+│   │   └── sales_details.csv
+│   └── source_erp/
+│       ├── CUST_AZ12.csv
+│       ├── LOC_A101.csv
+│       └── PX_CAT_G1V2.csv
+├── docs/                                  # Additional documentation (optional)
+├── scripts/
+│   ├── Init database.sql                  # Creates database and schemas
+│   ├── create_proper_function.sql         # Helper function for proper-casing
+│   ├── bronze/
+│   │   ├── create_bronze_tables.sql       # Creates raw staging tables
+│   │   └── load_data_into_bronze.sql      # Bulk-loads CSV data into bronze
+│   ├── silver/
+│   │   ├── create_silver_tables.sql       # Creates cleansed silver tables
+│   │   └── load_data_into_silver.sql      # Transforms and loads data into silver
+│   └── gold/
+│       └── create_gold_views.sql          # Creates dimensional views (star schema)
+└── tests/
+    ├── check_quality_silver.sql           # Data quality checks for the Silver layer
+    └── check_quality_gold.sql             # Data quality checks for the Gold layer
+```
